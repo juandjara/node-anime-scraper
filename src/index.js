@@ -103,7 +103,7 @@ class Anime {
   }
 
   static search(query) {
-    const url = `${BASE_URL}/search.html`;
+    const url = `${BASE_URL}/animes/search.html`;
 
     const options = {
       method: 'GET',
