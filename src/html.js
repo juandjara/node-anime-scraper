@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const got = require('got');
 const debug = require('debug')('anime-scraper-html');
 
-const BASE_URL = 'https://ww1.gogoanime.io';
+const BASE_URL = 'http://www1.gogoanime.es';
 
 // Search Results
 function parseSearchResults($) {
@@ -31,7 +31,8 @@ function parseAnimePage($) {
     url: `${BASE_URL}${$('[rel="canonical"]').attr('href')}`,
     name: $('.anime_info_body h1').text(),
     summary: $('span:contains("Plot Summary")').get(0).nextSibling.data,
-    genres: $("span:contains('Genre')").parent().find('a').map((i, val) => $(val).attr('title'))
+    genres: $("span:contains('Genre')").parent().find('a')
+      .map((i, val) => $(val).attr('title'))
       .get(),
   };
 }

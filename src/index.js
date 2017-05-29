@@ -5,7 +5,7 @@ const html = require('./html');
 const Promise = require('bluebird');
 const _ = require('lodash');
 
-const BASE_URL = 'https://ww1.gogoanime.io';
+const BASE_URL = 'http://www1.gogoanime.es';
 
 const cHttp = new CloudHttp();
 
@@ -27,9 +27,12 @@ class Episode {
   }
 
   fetch() {
-    return Page.fromUrl(this.url).then(html.parseVideo).then((videoLinks) => {
+    return Page.fromUrl(this.url)
+    .then(html.parseVideo)
+    .then((videoLinks) => {
       this.videoLinks = videoLinks;
-    }).then(() => this);
+    })
+    .then(() => this);
   }
 }
 
@@ -45,18 +48,22 @@ class Anime {
   }
 
   fetchEpisodes() {
-    const url = 'https://ww1.gogoanime.io/load-list-episode';
+    const url = `${BASE_URL}/load-list-episode`;
 
     const options = {
       query: {
         ep_start: 0,
         ep_end: 2000,
         id: this.id,
-      } };
+      },
+    };
 
-    return Page.fromUrl(url, options).then(html.parseEpisodeListing).then((episodes) => {
+    return Page.fromUrl(url, options)
+    .then(html.parseEpisodeListing)
+    .then((episodes) => {
       this.episodes = episodes.map(x => new Episode(x));
-    }).then(() => this);
+    })
+    .then(() => this);
   }
 
   fetchAllEpisodes() {
@@ -66,9 +73,11 @@ class Anime {
   }
 
   fetchInformation() {
-    return Anime.fromUrl(this.url).then((anime) => {
+    return Anime.fromUrl(this.url)
+    .then((anime) => {
       _.merge(this, anime);
-    }).then(() => this);
+    })
+    .then(() => this);
   }
 
   toString() {
@@ -76,7 +85,9 @@ class Anime {
   }
 
   static fromName(name) {
-    return Anime.search(name).then(results => results[0]).then(result => result.toAnime());
+    return Anime.search(name)
+      .then(results => results[0])
+      .then(result => result.toAnime());
   }
 
   static fromPage($) {
@@ -92,7 +103,7 @@ class Anime {
   }
 
   static search(query) {
-    const url = `${BASE_URL}/search.html`;
+    const url = `${BASE_URL}/animes/search.html`;
 
     const options = {
       method: 'GET',
@@ -101,7 +112,8 @@ class Anime {
 
     debug(`Running search for ${query}`);
 
-    return Page.fromUrl(url, options).then(html.parseSearchResults)
+    return Page.fromUrl(url, options)
+      .then(html.parseSearchResults)
       .then(results => results.map(x => new SearchResult(x)));
   }
 }
